@@ -8,7 +8,10 @@ on:
 jobs:
   fetch-m3u8:
     runs-on: ubuntu-latest
-    
+
+    permissions:
+      contents: write  # Push işlemi için gerekli izin
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
