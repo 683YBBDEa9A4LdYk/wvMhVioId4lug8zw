@@ -1,0 +1,27 @@
+name: M3U8 Dosyası İndir
+
+on:
+  schedule:
+    - cron: '*/1 * * * *'  # Her 1 dakikada bir çalışacak şekilde ayarlanmış cron ifadesi
+
+jobs:
+  run-script:
+    runs-on: ubuntu-latest  # GitHub Actions'ın hangi ortamda çalışacağını belirtir
+
+    steps:
+      - name: Repository'yi Checkout Et
+        uses: actions/checkout@v2  # Kodun bulunduğu repository'yi çeker
+
+      - name: Python'ı Yükle
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'  # Python versiyonunu ayarlıyoruz
+
+      - name: Gerekli Python Kütüphanelerini Yükle
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests  # requests kütüphanesini yüklüyoruz
+
+      - name: M3U8 Dosyasını İndir
+        run: |
+          python now.py  # M3U8 dosyasını indiren Python scriptinin adını buraya yazın
