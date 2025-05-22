@@ -16,21 +16,7 @@ match = re.search(pattern, html_content)
 
 if match:
     m3u8_url = match.group(1)
-    
-    # m3u8_url'yi dosyaya yaz
-    with open("m3u8_url.txt", "w") as file:
-        file.write(m3u8_url)
-    
-    print("M3U8 URL'si 'm3u8_url.txt' dosyasına başarıyla kaydedildi!")
 
-    # URL'yi test et
-    test_response = requests.get(m3u8_url, headers=headers)
-    if test_response.status_code == 200:
-        # M3U8 içeriğini dosyaya yaz
-        with open("now.m3u8", "wb") as f:
-            f.write(test_response.content)
-        print("M3U8 dosyası başarıyla 'now.m3u8' olarak kaydedildi!")
-    else:
-        print(f"M3U8 çalışmıyor. Status Code: {test_response.status_code}")
-else:
-    print("daiUrl bulunamadı!")
+    # m3u8_url'yi dosyaya yaz
+    with open("nowtv.m3u8", "w") as file:
+        file.write(m3u8_url)
