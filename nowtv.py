@@ -16,7 +16,12 @@ match = re.search(pattern, html_content)
 
 if match:
     m3u8_url = match.group(1)
-    print(m3u8_url)  # Burada sadece m3u8_url çıktı olarak verilecek
+    
+    # m3u8_url'yi dosyaya yaz
+    with open("m3u8_url.txt", "w") as file:
+        file.write(m3u8_url)
+    
+    print("M3U8 URL'si 'm3u8_url.txt' dosyasına başarıyla kaydedildi!")
 
     # URL'yi test et
     test_response = requests.get(m3u8_url, headers=headers)
