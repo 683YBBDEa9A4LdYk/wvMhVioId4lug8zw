@@ -1,6 +1,7 @@
 name: M3U8 Dosyası İndir
 
 on:
+  workflow_dispatch:  # Manuel olarak çalıştırılabilir
   schedule:
     - cron: '*/1 * * * *'  # Her 1 dakikada bir çalışacak şekilde ayarlanmış cron ifadesi
 
