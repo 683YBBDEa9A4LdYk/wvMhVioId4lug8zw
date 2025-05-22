@@ -2,8 +2,8 @@ name: NowTV M3U8 Fetcher
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # Her dakika çalıştır
-  workflow_dispatch:  # Manuel tetikleme için
+    - cron: '*/5 * * * *'  # GitHub'da en sık 5 dakikada bir çalıştırılabilir
+  workflow_dispatch:
 
 jobs:
   fetch-m3u8:
@@ -12,6 +12,8 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+      with:
+        persist-credentials: false
 
     - name: Set up Python
       uses: actions/setup-python@v2
@@ -26,9 +28,21 @@ jobs:
     - name: Run script
       run: python nowtv.py
 
-    - name: Commit and push if M3U8 changed
+    - name: Verify M3U8 file
+      run: |
+        if [ ! -f "nowtv.m3u8" ]; then
+          echo "Error: nowtv.m3u8 file not found!"
+          exit 1
+        fi
+        echo "File exists, content:"
+        cat nowtv.m3u8
+
+    - name: Commit and push
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
         git add now.m3u8
-        git diff --quiet && git diff --staged --quiet || (git commit -m "Update M3U8 file" && git push "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git")
+        git diff --cached --quiet || git commit -m "Auto-update M3U8 [skip ci]"
+        git push origin HEAD:main
