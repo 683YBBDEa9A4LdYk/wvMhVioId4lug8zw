@@ -1,28 +1,34 @@
-name: M3U8 Dosyası İndir
+name: NowTV M3U8 Fetcher
 
 on:
-  workflow_dispatch:  # Manuel olarak çalıştırılabilir
   schedule:
-    - cron: '*/1 * * * *'  # Her 1 dakikada bir çalışacak şekilde ayarlanmış cron ifadesi
+    - cron: '*/1 * * * *'  # Her dakika çalıştır
+  workflow_dispatch:  # Manuel tetikleme için
 
 jobs:
-  run-script:
-    runs-on: ubuntu-latest  # GitHub Actions'ın hangi ortamda çalışacağını belirtir
-
+  fetch-m3u8:
+    runs-on: ubuntu-latest
+    
     steps:
-      - name: Repository'yi Checkout Et
-        uses: actions/checkout@v2  # Kodun bulunduğu repository'yi çeker
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Python'ı Yükle
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'  # Python versiyonunu ayarlıyoruz
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
 
-      - name: Gerekli Python Kütüphanelerini Yükle
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests  # requests kütüphanesini yüklüyoruz
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
 
-      - name: M3U8 Dosyasını İndir
-        run: |
-          python now.py  # M3U8 dosyasını indiren Python scriptinin adını buraya yazın
+    - name: Run script
+      run: python nowtv.py
+
+    - name: Commit and push if M3U8 changed
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add now.m3u8
+        git diff --quiet && git diff --staged --quiet || (git commit -m "Update M3U8 file" && git push)
